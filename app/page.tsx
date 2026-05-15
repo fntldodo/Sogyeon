@@ -67,7 +67,7 @@ export default function Home() {
           >
             <div className="mb-4 flex items-center justify-between gap-4">
               <div>
-                <p className="text-sm font-bold text-brand">Phase 1 정적 플로우</p>
+                <p className="text-sm font-bold text-brand">Phase 2 선택값 플로우</p>
                 <h2 className="mt-1 text-2xl font-extrabold tracking-normal text-ink">
                   상담 준비 흐름
                 </h2>
