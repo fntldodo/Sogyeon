@@ -1,4 +1,4 @@
-import type { FlowValues, RegionField, StartupType, Step } from "./types";
+import type { ConsultationFormValues, FlowValues, RegionField, StartupType, Step } from "./types";
 
 export const emptyValues: FlowValues = {
   startup_type: "",
@@ -15,60 +15,79 @@ export const emptyValues: FlowValues = {
   freezer_support_status: ""
 };
 
+export const emptyConsultationFormValues: ConsultationFormValues = {
+  customer_name: "",
+  phone: "",
+  memo: "",
+  privacy_agreed: false
+};
+
 export const steps: Step[] = [
   {
     id: "startup-type",
-    eyebrow: "1 / 9",
+    eyebrow: "1 / 11",
     title: "창업 종류 선택",
     description: "준비 중인 아이스크림 창업 형태와 가장 가까운 항목을 골라보세요."
   },
   {
     id: "region",
-    eyebrow: "2 / 9",
+    eyebrow: "2 / 11",
     title: "지역 선택",
     description: "상담에 필요한 기본 지역 정보를 정리합니다. 아직 정확하지 않아도 괜찮습니다."
   },
   {
     id: "store-status",
-    eyebrow: "3 / 9",
+    eyebrow: "3 / 11",
     title: "매장 상태 선택",
     description: "현재 매장 준비 단계에 맞는 항목을 선택해 상담 준비 범위를 좁힙니다."
   },
   {
     id: "store-format",
-    eyebrow: "4 / 9",
+    eyebrow: "4 / 11",
     title: "매장 형태 선택",
     description: "선택한 창업 종류에 따라 확인할 수 있는 매장 형태를 정리합니다."
   },
   {
     id: "pos-kiosk",
-    eyebrow: "5 / 9",
+    eyebrow: "5 / 11",
     title: "키오스크/POS 선택",
     description: "필요한 장비 방향과 자주 확인하는 옵션을 정리합니다."
   },
   {
     id: "sogyeon-code",
-    eyebrow: "6 / 9",
+    eyebrow: "6 / 11",
     title: "소견 대표코드 안내",
     description: "상담 진행 방식에 맞춰 대표코드 활용 여부를 확인합니다."
   },
   {
     id: "supply-type",
-    eyebrow: "7 / 9",
+    eyebrow: "7 / 11",
     title: "납품 방식 선택",
     description: "희망하는 납품 상담 방향을 정리합니다."
   },
   {
     id: "freezer-support",
-    eyebrow: "8 / 9",
+    eyebrow: "8 / 11",
     title: "쇼케이스/냉동고 지원 확인",
     description: "제품 보관과 진열 장비의 준비 상태를 확인합니다."
   },
   {
     id: "report",
-    eyebrow: "9 / 9",
+    eyebrow: "9 / 11",
     title: "상담 전 조건 정리 보고서",
     description: "선택한 조건을 바탕으로 납품 상담 전에 확인할 내용을 요약합니다."
+  },
+  {
+    id: "consultation-form",
+    eyebrow: "10 / 11",
+    title: "상담 요청서 작성",
+    description: "납품 상담에 필요한 연락처와 요청 메모를 남겨주세요."
+  },
+  {
+    id: "consultation-complete",
+    eyebrow: "11 / 11",
+    title: "상담 요청서 확인",
+    description: "입력한 고객 정보와 창업 조건 요약을 한 번 더 확인합니다."
   }
 ];
 
@@ -160,3 +179,9 @@ export const reportSectionLabels = {
   supply: "납품 상담 방식 요약",
   freezer: "쇼케이스/냉동고 확인 요약"
 };
+
+export const consultationCompletionNotice =
+  "아직 실제 접수 저장 기능은 연결되지 않았습니다. 다음 단계에서 Supabase 저장 기능을 연결할 예정입니다.";
+
+export const privacyAgreementText =
+  "개인정보와 상담 요청 내용을 납품 상담 준비 목적으로 확인하는 데 동의합니다.";

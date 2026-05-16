@@ -15,6 +15,15 @@ export type FlowValues = {
   freezer_support_status: string;
 };
 
+export type ConsultationFormValues = {
+  customer_name: string;
+  phone: string;
+  memo: string;
+  privacy_agreed: boolean;
+};
+
+export type ConsultationFormErrors = Partial<Record<keyof ConsultationFormValues, string>>;
+
 export type StepId =
   | "startup-type"
   | "region"
@@ -24,7 +33,9 @@ export type StepId =
   | "sogyeon-code"
   | "supply-type"
   | "freezer-support"
-  | "report";
+  | "report"
+  | "consultation-form"
+  | "consultation-complete";
 
 export type Step = {
   id: StepId;

@@ -13,6 +13,7 @@ import {
 } from "./components";
 import {
   cashPaymentOptions,
+  emptyConsultationFormValues,
   emptyValues,
   freezerSupportOptions,
   posKioskDetailOptions,
@@ -26,12 +27,16 @@ import {
   storeStatusOptions,
   supplyTypeOptions
 } from "./constants";
-import type { FlowValues, StartupType } from "./types";
+import { ConsultationCompletePanel, ConsultationFormPanel } from "./form-components";
+import type { ConsultationFormErrors, ConsultationFormValues, FlowValues, StartupType, StepId } from "./types";
 import { createReportSections } from "./utils";
 
 export default function FlowPage() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [values, setValues] = useState<FlowValues>(emptyValues);
+  const [consultationValues, setConsultationValues] =
+    useState<ConsultationFormValues>(emptyConsultationFormValues);
+  const [consultationErrors, setConsultationErrors] = useState<ConsultationFormErrors>({});
   const step = steps[activeIndex];
   const progress = Math.round(((activeIndex + 1) / steps.length) * 100);
 
@@ -55,6 +60,65 @@ export default function FlowPage() {
       ...current,
       [key]: value
     }));
+  };
+
+  const updateConsultationValue = <Key extends keyof ConsultationFormValues>(
+    key: Key,
+    value: ConsultationFormValues[Key]
+  ) => {
+    setConsultationValues((current) => ({
+      ...current,
+      [key]: value
+    }));
+    setConsultationErrors((current) => ({
+      ...current,
+      [key]: undefined
+    }));
+  };
+
+  const goToStep = (stepId: StepId) => {
+    const nextIndex = steps.findIndex((item) => item.id === stepId);
+
+    if (nextIndex >= 0) {
+      setActiveIndex(nextIndex);
+    }
+  };
+
+  const validateConsultationForm = () => {
+    const nextErrors: ConsultationFormErrors = {};
+    const trimmedName = consultationValues.customer_name.trim();
+    const trimmedPhone = consultationValues.phone.trim();
+
+    if (!trimmedName) {
+      nextErrors.customer_name = "이름 또는 신청자명을 입력해주세요.";
+    }
+
+    if (!trimmedPhone) {
+      nextErrors.phone = "연락처를 입력해주세요.";
+    } else if (trimmedPhone.length < 8) {
+      nextErrors.phone = "연락처는 8자 이상으로 입력해주세요.";
+    }
+
+    if (!consultationValues.privacy_agreed) {
+      nextErrors.privacy_agreed = "개인정보 및 상담 전달 동의가 필요합니다.";
+    }
+
+    setConsultationErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0;
+  };
+
+  const submitConsultationForm = () => {
+    if (!validateConsultationForm()) {
+      return;
+    }
+
+    setConsultationValues((current) => ({
+      ...current,
+      customer_name: current.customer_name.trim(),
+      phone: current.phone.trim(),
+      memo: current.memo.trim()
+    }));
+    goToStep("consultation-complete");
   };
 
   const selectStartupType = (startupType: StartupType) => {
@@ -86,6 +150,11 @@ export default function FlowPage() {
   };
 
   const goNext = () => {
+    if (step.id === "consultation-form") {
+      submitConsultationForm();
+      return;
+    }
+
     if (activeIndex === steps.length - 1) {
       return;
     }
@@ -95,7 +164,17 @@ export default function FlowPage() {
 
   const resetFlow = () => {
     setValues(emptyValues);
+    setConsultationValues(emptyConsultationFormValues);
+    setConsultationErrors({});
     setActiveIndex(0);
+  };
+
+  const getNextLabel = () => {
+    if (step.id === "consultation-form") {
+      return "상담 요청서 확인하기";
+    }
+
+    return "다음 단계";
   };
 
   const storeFormatChoices =
@@ -255,11 +334,30 @@ export default function FlowPage() {
               </OptionGrid>
             ) : null}
 
-            {step.id === "report" ? <ReportPanel sections={reportSections} /> : null}
+            {step.id === "report" ? (
+              <ReportPanel
+                sections={reportSections}
+                onConsultationStart={() => goToStep("consultation-form")}
+              />
+            ) : null}
+
+            {step.id === "consultation-form" ? (
+              <ConsultationFormPanel
+                values={consultationValues}
+                errors={consultationErrors}
+                onChange={updateConsultationValue}
+              />
+            ) : null}
+
+            {step.id === "consultation-complete" ? (
+              <ConsultationCompletePanel formValues={consultationValues} reportSections={reportSections} />
+            ) : null}
 
             <BottomActions
               activeIndex={activeIndex}
               totalSteps={steps.length}
+              nextLabel={getNextLabel()}
+              showNext={step.id !== "report" && step.id !== "consultation-complete"}
               onPrevious={goPrevious}
               onNext={goNext}
               onReset={resetFlow}

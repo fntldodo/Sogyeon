@@ -26,6 +26,9 @@ type StepHeaderProps = {
 type BottomActionsProps = {
   activeIndex: number;
   totalSteps: number;
+  nextLabel?: string;
+  showNext?: boolean;
+  nextDisabled?: boolean;
   onPrevious: () => void;
   onNext: () => void;
   onReset: () => void;
@@ -39,6 +42,7 @@ type RegionInputsProps = {
 
 type ReportPanelProps = {
   sections: ReportSection[];
+  onConsultationStart?: () => void;
 };
 
 export function FlowSidebar({ activeIndex, progress, steps, onStepSelect }: SidebarProps) {
@@ -178,7 +182,7 @@ export function RegionInputs({ fields, values, onChange }: RegionInputsProps) {
   );
 }
 
-export function ReportPanel({ sections }: ReportPanelProps) {
+export function ReportPanel({ sections, onConsultationStart }: ReportPanelProps) {
   return (
     <div className="grid gap-4">
       <div className="rounded-lg border border-line bg-paper p-4 sm:p-5">
@@ -192,13 +196,41 @@ export function ReportPanel({ sections }: ReportPanelProps) {
           <ReportRow key={section.label} label={section.label} value={section.value} />
         ))}
       </div>
+      {onConsultationStart ? (
+        <div className="rounded-lg border border-brand bg-white p-4 shadow-sm sm:p-5">
+          <h2 className="text-lg font-extrabold text-ink">상담 요청서로 이어가기</h2>
+          <p className="mt-2 text-sm leading-6 text-muted">
+            정리한 창업 조건을 바탕으로 이름과 연락처를 남기면, 다음 단계에서 상담 요청서 저장 기능을 연결할 수 있습니다.
+          </p>
+          <button
+            type="button"
+            onClick={onConsultationStart}
+            className="mt-4 flex min-h-14 w-full touch-manipulation items-center justify-center rounded-lg bg-brand px-5 py-4 text-base font-extrabold text-white shadow-soft"
+          >
+            상담 요청서 작성하기
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }
 
-export function BottomActions({ activeIndex, totalSteps, onPrevious, onNext, onReset }: BottomActionsProps) {
+export function BottomActions({
+  activeIndex,
+  totalSteps,
+  nextLabel = "다음 단계",
+  showNext = true,
+  nextDisabled = false,
+  onPrevious,
+  onNext,
+  onReset
+}: BottomActionsProps) {
   return (
-    <div className="fixed inset-x-0 bottom-0 z-10 grid grid-cols-2 gap-2 border-t border-line bg-white/95 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-[0_-16px_35px_rgba(23,32,42,0.08)] backdrop-blur sm:static sm:mt-8 sm:bg-transparent sm:p-0 sm:pt-5 sm:shadow-none sm:backdrop-blur-0">
+    <div
+      className={`fixed inset-x-0 bottom-0 z-10 grid gap-2 border-t border-line bg-white/95 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-[0_-16px_35px_rgba(23,32,42,0.08)] backdrop-blur sm:static sm:mt-8 sm:bg-transparent sm:p-0 sm:pt-5 sm:shadow-none sm:backdrop-blur-0 ${
+        showNext ? "grid-cols-2" : "grid-cols-1 sm:grid-cols-2"
+      }`}
+    >
       <button
         type="button"
         onClick={onPrevious}
@@ -207,18 +239,22 @@ export function BottomActions({ activeIndex, totalSteps, onPrevious, onNext, onR
       >
         이전
       </button>
-      <button
-        type="button"
-        onClick={onNext}
-        className="flex min-h-14 touch-manipulation items-center justify-center rounded-lg bg-brand px-4 py-4 text-base font-bold text-white disabled:cursor-not-allowed disabled:opacity-45"
-        disabled={activeIndex === totalSteps - 1}
-      >
-        다음 단계
-      </button>
+      {showNext ? (
+        <button
+          type="button"
+          onClick={onNext}
+          className="flex min-h-14 touch-manipulation items-center justify-center rounded-lg bg-brand px-4 py-4 text-base font-bold text-white disabled:cursor-not-allowed disabled:opacity-45"
+          disabled={activeIndex === totalSteps - 1 || nextDisabled}
+        >
+          {nextLabel}
+        </button>
+      ) : null}
       <button
         type="button"
         onClick={onReset}
-        className="col-span-2 flex min-h-12 touch-manipulation items-center justify-center rounded-lg border border-line bg-paper px-4 py-3 text-sm font-bold text-muted"
+        className={`flex min-h-12 touch-manipulation items-center justify-center rounded-lg border border-line bg-paper px-4 py-3 text-sm font-bold text-muted ${
+          showNext ? "col-span-2" : ""
+        }`}
       >
         처음부터 다시하기
       </button>
