@@ -1,5 +1,5 @@
-import { reportSectionLabels } from "./constants";
-import type { FlowValues, ReportSection } from "./types";
+import { partnerCheckRequestItems, reportSectionLabels } from "./constants";
+import type { ConsultationFormValues, FlowValues, ReportSection } from "./types";
 
 export function displayValue(value: string) {
   return value.trim() || "아직 선택하지 않음";
@@ -47,4 +47,37 @@ export function createReportSections(values: FlowValues): ReportSection[] {
       value: displayValue(values.freezer_support_status)
     }
   ];
+}
+
+export function createInternalConsultationSummary(
+  values: FlowValues,
+  consultationValues: ConsultationFormValues
+): string {
+  const regionValue =
+    [values.region_sido, values.region_sigungu, values.region_area_text]
+      .filter((item) => item.trim())
+      .join(" ") || "아직 선택하지 않음";
+  const memoValue = consultationValues.memo.trim() || "작성한 메모 없음";
+  const checkItems = partnerCheckRequestItems.map((item) => `- ${item}`).join("\n");
+
+  return [
+    "[소견 내부 전달용 상담 요청서]",
+    "",
+    `신청자명: ${displayValue(consultationValues.customer_name)}`,
+    `연락처: ${displayValue(consultationValues.phone)}`,
+    `창업 유형: ${displayValue(values.startup_type)}`,
+    `지역: ${regionValue}`,
+    `매장 상태: ${displayValue(values.store_status)}`,
+    `매장 형태: ${displayValue(values.store_format)}`,
+    `키오스크/POS 선택: ${displayValue(values.pos_kiosk_type)}`,
+    `키오스크/POS 복수 선택 옵션: ${displayList(values.pos_kiosk_options)}`,
+    `현금 결제 방식: ${displayValue(values.cash_payment_type)}`,
+    `소견 대표코드 선택 여부: ${displayValue(values.sogyeon_code_choice)}`,
+    `납품 방식: ${displayValue(values.supply_type)}`,
+    `쇼케이스/냉동고 상태: ${displayValue(values.freezer_support_status)}`,
+    `상담 메모: ${memoValue}`,
+    "",
+    "업체에 확인 요청할 항목:",
+    checkItems
+  ].join("\n");
 }

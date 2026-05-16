@@ -185,3 +185,17 @@ export const consultationCompletionNotice =
 
 export const privacyAgreementText =
   "개인정보와 상담 요청 내용을 납품 상담 준비 목적으로 확인하는 데 동의합니다.";
+
+export const partnerCheckRequestItems = [
+  "냉동고/쇼케이스 지원 가능 여부",
+  "초도 증정품/지원품 가능 여부",
+  "배송 주기",
+  "혼판 가능 여부",
+  "최소 발주 조건",
+  "긴급 발주 대응 가능 여부"
+];
+
+export const internalSummaryCopyFeedback = {
+  success: "복사되었습니다.",
+  error: "복사하지 못했습니다. 요약문을 직접 선택해 복사해주세요."
+};

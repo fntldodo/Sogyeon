@@ -1,4 +1,5 @@
-import { consultationCompletionNotice, privacyAgreementText } from "./constants";
+import { useState } from "react";
+import { consultationCompletionNotice, internalSummaryCopyFeedback, privacyAgreementText } from "./constants";
 import type { ConsultationFormErrors, ConsultationFormValues, ReportSection } from "./types";
 
 type ConsultationFormPanelProps = {
@@ -12,8 +13,11 @@ type ConsultationFormPanelProps = {
 
 type ConsultationCompletePanelProps = {
   formValues: ConsultationFormValues;
+  internalSummaryText: string;
   reportSections: ReportSection[];
 };
+
+type CopyStatus = "idle" | "success" | "error";
 
 export function ConsultationFormPanel({ values, errors, onChange }: ConsultationFormPanelProps) {
   return (
@@ -84,8 +88,25 @@ export function ConsultationFormPanel({ values, errors, onChange }: Consultation
 
 export function ConsultationCompletePanel({
   formValues,
+  internalSummaryText,
   reportSections
 }: ConsultationCompletePanelProps) {
+  const [copyStatus, setCopyStatus] = useState<CopyStatus>("idle");
+
+  const copyInternalSummary = async () => {
+    if (!navigator.clipboard) {
+      setCopyStatus("error");
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(internalSummaryText);
+      setCopyStatus("success");
+    } catch {
+      setCopyStatus("error");
+    }
+  };
+
   return (
     <div className="grid gap-4">
       <div className="rounded-lg border border-brand bg-paper p-4 sm:p-5">
@@ -106,6 +127,39 @@ export function ConsultationCompletePanel({
         {reportSections.map((section) => (
           <SummaryRow key={section.label} label={section.label} value={section.value} />
         ))}
+      </div>
+
+      <div className="min-w-0 rounded-lg border border-brand bg-white p-4 shadow-sm sm:p-5">
+        <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start">
+          <div className="min-w-0">
+            <h2 className="break-words text-lg font-extrabold text-ink">내부 전달용 상담 요청서</h2>
+            <p className="mt-2 break-words text-sm leading-6 text-muted">
+              관리자가 회사나 지역 대리점에 복사해서 전달할 수 있는 요약문입니다. 아직 저장이나 외부 전송은 하지 않습니다.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={copyInternalSummary}
+            className="flex min-h-12 w-full touch-manipulation items-center justify-center rounded-lg bg-brand px-5 py-3 text-sm font-extrabold text-white shadow-soft sm:w-auto"
+          >
+            요약문 복사
+          </button>
+        </div>
+        {copyStatus !== "idle" ? (
+          <p
+            className={`mt-3 break-words text-sm font-bold leading-6 ${
+              copyStatus === "success" ? "text-brand" : "text-red-600"
+            }`}
+            role="status"
+          >
+            {copyStatus === "success"
+              ? internalSummaryCopyFeedback.success
+              : internalSummaryCopyFeedback.error}
+          </p>
+        ) : null}
+        <pre className="mt-4 max-h-[28rem] overflow-auto whitespace-pre-wrap break-words rounded-lg border border-line bg-paper p-4 text-sm font-semibold leading-6 text-ink">
+          {internalSummaryText}
+        </pre>
       </div>
     </div>
   );

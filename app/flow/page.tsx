@@ -29,7 +29,7 @@ import {
 } from "./constants";
 import { ConsultationCompletePanel, ConsultationFormPanel } from "./form-components";
 import type { ConsultationFormErrors, ConsultationFormValues, FlowValues, StartupType, StepId } from "./types";
-import { createReportSections } from "./utils";
+import { createInternalConsultationSummary, createReportSections } from "./utils";
 
 export default function FlowPage() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -54,6 +54,10 @@ export default function FlowPage() {
   );
 
   const reportSections = useMemo(() => createReportSections(values), [values]);
+  const internalSummaryText = useMemo(
+    () => createInternalConsultationSummary(values, consultationValues),
+    [values, consultationValues]
+  );
 
   const updateValue = <Key extends keyof FlowValues>(key: Key, value: FlowValues[Key]) => {
     setValues((current) => ({
@@ -350,7 +354,11 @@ export default function FlowPage() {
             ) : null}
 
             {step.id === "consultation-complete" ? (
-              <ConsultationCompletePanel formValues={consultationValues} reportSections={reportSections} />
+              <ConsultationCompletePanel
+                formValues={consultationValues}
+                internalSummaryText={internalSummaryText}
+                reportSections={reportSections}
+              />
             ) : null}
 
             <BottomActions
