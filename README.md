@@ -29,6 +29,15 @@ npm.cmd run dev
 
 개발 서버가 실행되면 브라우저에서 `http://localhost:3000`으로 접속합니다.
 
+## 검증 명령
+
+```bash
+npm.cmd run build
+npm.cmd run lint
+rg "\bany\b" app tsconfig.json tailwind.config.ts
+git diff --check
+```
+
 ## 현재 구현 범위
 
 - 랜딩 페이지
