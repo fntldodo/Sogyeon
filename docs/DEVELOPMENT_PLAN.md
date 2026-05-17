@@ -70,6 +70,11 @@
 - 상담 요청 데이터를 Supabase에 저장합니다.
 - `DATA_FIELDS.md`의 MVP 필드를 기준으로 저장 스키마를 구성합니다.
 
+### 전제 조건
+
+- Phase 3.8에서 `docs/SUPABASE_SCHEMA.md`의 Supabase 스키마/RLS 설계 초안이 완료되어 있어야 합니다.
+- Phase 4는 상담 요청 저장 구현에 집중하며, 관리자 페이지와 관리자 인증은 Phase 5 범위로 유지합니다.
+
 ### 완료 기준
 
 - 상담 요청 제출 시 데이터가 Supabase에 저장됩니다.
