@@ -37,7 +37,7 @@ npm.cmd run dev
 ```bash
 npm.cmd run build
 npm.cmd run lint
-rg "\bany\b" app tsconfig.json tailwind.config.ts
+rg "\bany\b" app lib tsconfig.json tailwind.config.ts
 git diff --check
 ```
 

@@ -126,6 +126,47 @@
 - 관리자 페이지 구현
 - 파트너 권한 구현
 
+## Phase 4.2.0: 서버 payload 타입/검증/매퍼 구현
+
+### 목표
+
+- 상담 요청 저장 API 구현 전에 서버에서 사용할 payload 타입, 검증 함수, 매퍼 순수 함수를 구현합니다.
+- Supabase 연결이나 Route Handler 생성 없이 `lib/consultation`에 순수 함수만 추가합니다.
+
+### 완료 기준
+
+- `lib/consultation/types.ts`에 상담 요청 입력, 저장 payload, 응답 타입이 정의됩니다.
+- `lib/consultation/validation.ts`에 서버 검증 함수가 구현됩니다.
+- `lib/consultation/mappers.ts`에 정규화와 payload 매핑 함수가 구현됩니다.
+- `any` 없이 unknown 입력을 검증 가능한 구조로 처리합니다.
+
+### 제외 범위
+
+- Route Handler 생성
+- Supabase client 생성
+- DB insert 구현
+- 환경변수 추가
+- SQL migration 작성
+
+## Phase 4.2.1: Route Handler 골격 및 저장 연결 준비
+
+### 목표
+
+- Phase 4.2.0의 순수 함수를 사용해 상담 요청 저장 Route Handler 골격을 준비합니다.
+- 실제 Supabase 저장 연결 전 요청/응답 흐름과 UI 연결 방식을 확인합니다.
+
+### 완료 기준
+
+- `app/api/consultation-requests/route.ts` 생성 여부와 범위가 확정됩니다.
+- 검증 성공/실패 응답이 API 설계와 일치합니다.
+- Supabase 저장 연결 전 mock 또는 no-op 처리 여부가 결정됩니다.
+
+### 제외 범위
+
+- 실제 DB 저장
+- 관리자 페이지 구현
+- 파트너 권한 구현
+
 ## Phase 4.2: Supabase 저장 구현
 
 ### 목표
