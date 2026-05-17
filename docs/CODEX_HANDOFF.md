@@ -24,6 +24,7 @@
 - Phase 2 완료: `/flow` 선택값 상태 관리와 임시 보고서 실제 선택값 반영 구현
 - Phase 2.5 완료: 모바일 우선 반응형 UI 정리, 카드형 선택 UI, 진행 단계 표시, 버튼/입력창 터치 영역 개선, 코드 구조 일부 분리
 - Phase 3 완료: 임시 보고서 이후 상담 요청서 작성 폼, 필수값 검증, 프론트 상태 기반 상담 요청서 확인/완료 화면 구현
+- Phase 4.2.1 진행 중: 상담 요청 검증 Route Handler 골격 추가, DB 저장 없이 mock 응답 단계
 - 아직 Supabase, DB 저장, 로그인, 관리자, 채팅, 결제, 이메일/SMS, 외부 API 기능은 없습니다.
 
 ## 현재 주요 파일
@@ -103,7 +104,7 @@
 - 인테리어/부동산 중개 기능 구현 금지
 - 앱/PWA 설정 금지
 - 임의 기능 확장 금지
-- `any` 타입 사용 금지
+- 타입 검사를 우회하는 범용 타입 사용 금지
 
 ## 검증 기준
 
@@ -112,7 +113,7 @@
 ```bash
 npm.cmd run build
 git diff --check
-rg "\bany\b" app tsconfig.json tailwind.config.ts
+rg "\bany\b" app lib tsconfig.json tailwind.config.ts
 ```
 
 로컬 서버를 실행한 뒤 아래 응답도 확인합니다.
@@ -240,13 +241,13 @@ https://github.com/fntldodo/Sogyeon
 - 인테리어/부동산 중개 기능 구현 금지
 - 앱/PWA 설정 금지
 - 임의 기능 확장 금지
-- any 타입 사용 금지
+- 타입 검사를 우회하는 범용 타입 사용 금지
 
 검증 기준:
 - 변경 후 npm.cmd run build 성공
 - git diff --check 통과
-- any 검색 결과 없어야 함:
-  rg "\bany\b" app tsconfig.json tailwind.config.ts
+- 타입 검사를 우회하는 범용 타입 검색 결과 없어야 함:
+  rg "\bany\b" app lib tsconfig.json tailwind.config.ts
 - http://localhost:3000/ 응답 200 확인
 - http://localhost:3000/flow 응답 200 확인
 - /flow 기존 선택값 저장, 임시 보고서 출력, 상담 요청서 필수값 검증, 완료 화면 요약 기능이 유지되어야 함

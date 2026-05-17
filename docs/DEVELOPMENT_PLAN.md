@@ -138,7 +138,7 @@
 - `lib/consultation/types.ts`에 상담 요청 입력, 저장 payload, 응답 타입이 정의됩니다.
 - `lib/consultation/validation.ts`에 서버 검증 함수가 구현됩니다.
 - `lib/consultation/mappers.ts`에 정규화와 payload 매핑 함수가 구현됩니다.
-- `any` 없이 unknown 입력을 검증 가능한 구조로 처리합니다.
+- 타입 검사를 우회하는 범용 타입 없이 `unknown` 입력을 검증 가능한 구조로 처리합니다.
 
 ### 제외 범위
 
@@ -157,13 +157,15 @@
 
 ### 완료 기준
 
-- `app/api/consultation-requests/route.ts` 생성 여부와 범위가 확정됩니다.
+- `app/api/consultation-requests/route.ts`가 생성됩니다.
 - 검증 성공/실패 응답이 API 설계와 일치합니다.
-- Supabase 저장 연결 전 mock 또는 no-op 처리 여부가 결정됩니다.
+- Supabase 저장 연결 전 mock/no-op 응답을 반환합니다.
 
 ### 제외 범위
 
 - 실제 DB 저장
+- Supabase client 생성
+- 환경변수 추가
 - 관리자 페이지 구현
 - 파트너 권한 구현
 
