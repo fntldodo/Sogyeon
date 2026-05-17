@@ -30,7 +30,7 @@ Supabase server client 권장 위치는 다음으로 확정합니다.
 lib/supabase/server.ts
 ```
 
-이번 Phase에서는 이 파일을 만들지 않습니다. 다음 구현 Phase에서 서버 전용 client 생성 위치로 사용합니다.
+Phase 4.2.2-B에서 이 파일을 생성했고, Phase 4.2.2-C에서 `server-only` 보호를 적용했습니다.
 
 ## 3. Route Handler 위치
 
@@ -289,9 +289,14 @@ Phase 4.2.2-B에서 실제 DB insert 직전 준비만 진행합니다.
 
 ## 14. 다음 구현 Phase TODO
 
+- `lib/consultation/repository.ts` 생성
+- `saveConsultationRequest` 구현
 - 환경변수 실제 추가는 로컬 `.env.local`에서만 진행
 - Route Handler에서 `mapConsultationInputToStoragePayload` 연결
+- Route Handler에서 repository 호출
 - Supabase 저장 없는 mock 응답을 실제 저장 응답으로 전환
+- mock `request_id` 제거
+- 실제 `request_id` 반환
 - 3테이블 insert 구현
 - contacts insert 실패 시 requests 보상 삭제 구현
 - events insert 실패 시 rollback 금지
@@ -302,7 +307,31 @@ Phase 4.2.2-B에서 실제 DB insert 직전 준비만 진행합니다.
 - 중복 제출 방어 최소 구현 여부 결정
 - `/flow` 제출 연동은 그 다음 Phase로 분리 가능
 
-## 15. Phase 4.2.0 구현 메모
+## 15. Phase 4.2.2-C 구현 메모
+
+Phase 4.2.2-C에서 실제 DB insert 직전 보안 잠금만 진행합니다.
+
+- `lib/supabase/server.ts`에 `server-only` 보호를 적용합니다.
+- 실제 secret 없이 `.env.example`을 추가합니다.
+- 실제 저장 함수 위치는 `lib/consultation/repository.ts`로 확정합니다.
+- 저장 함수명은 `saveConsultationRequest`로 확정합니다.
+- 이번 Phase에서는 `lib/consultation/repository.ts` 파일을 만들지 않습니다.
+- Route Handler에서 Supabase insert 호출은 아직 하지 않습니다.
+
+저장 함수 역할은 다음과 같이 확정합니다.
+
+- `mapConsultationInputToStoragePayload` 결과를 입력으로 받습니다.
+- Supabase 3테이블 insert와 보상 삭제 처리를 Route Handler 밖으로 분리합니다.
+- `consultation_requests` insert를 수행합니다.
+- `consultation_request_contacts` insert를 수행합니다.
+- `consultation_request_events` insert를 수행합니다.
+- contacts 실패 시 requests 보상 삭제를 시도합니다.
+- events 실패 시 request/contact rollback을 하지 않고 서버 로그 또는 운영 확인 TODO로 처리합니다.
+- 성공 시 실제 `request_id`를 반환합니다.
+
+Route Handler는 요청 파싱, 검증, mapper 호출, repository 호출, 응답 생성에 집중합니다.
+
+## 16. Phase 4.2.0 구현 메모
 
 Phase 4.2.0에서 아래 순수 함수 파일을 먼저 구현합니다.
 
@@ -314,9 +343,9 @@ Phase 4.2.0에서 아래 순수 함수 파일을 먼저 구현합니다.
 
 이번 단계에서는 Route Handler, Supabase client, DB insert를 만들지 않습니다.
 
-## 16. 이번 Phase 구현 금지
+## 17. 이번 Phase 구현 금지
 
-Phase 4.2.2-A에서는 아래를 하지 않습니다.
+Phase 4.2.2-C에서는 아래를 하지 않습니다.
 
 - 앱 코드 수정
 - `/flow` 기능 변경

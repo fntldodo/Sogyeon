@@ -26,7 +26,8 @@
 - Phase 3 완료: 임시 보고서 이후 상담 요청서 작성 폼, 필수값 검증, 프론트 상태 기반 상담 요청서 확인/완료 화면 구현
 - Phase 4.2.1 완료: 상담 요청 검증 Route Handler 골격 추가, DB 저장 없이 mock 응답 단계
 - Phase 4.2.2-A 완료: Supabase 실제 저장 구현 전 서버 저장 설계 확정
-- Phase 4.2.2-B 진행 중: API 에러 응답 타입과 Supabase server client 준비, DB insert 미구현
+- Phase 4.2.2-B 완료: API 에러 응답 타입과 Supabase server client 준비, DB insert 미구현
+- Phase 4.2.2-C 진행 중: Supabase server client server-only 보호와 `.env.example` 준비, repository 구조 문서 확정
 - 아직 Supabase, DB 저장, 로그인, 관리자, 채팅, 결제, 이메일/SMS, 외부 API 기능은 없습니다.
 
 ## 현재 주요 파일

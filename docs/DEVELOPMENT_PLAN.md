@@ -219,6 +219,31 @@
 - SQL migration 작성
 - `/flow` UI 또는 상태관리 변경
 
+## Phase 4.2.2-C: Supabase 저장 직전 보안 잠금
+
+### 목표
+
+- Supabase server client에 서버 전용 보호를 적용합니다.
+- 실제 secret 없이 `.env.example`을 추가합니다.
+- 실제 insert 구현 전 repository 저장 함수 구조를 문서로 확정합니다.
+- Phase 4.2.3에서 구현할 3테이블 insert 범위를 명확히 정리합니다.
+
+### 완료 기준
+
+- `lib/supabase/server.ts`에 `server-only` 보호가 적용됩니다.
+- `.env.example`에 안전한 placeholder만 포함됩니다.
+- 저장 함수 위치는 `lib/consultation/repository.ts`로 확정됩니다.
+- 저장 함수명은 `saveConsultationRequest`로 확정됩니다.
+- 실제 DB insert 구현은 다음 Phase로 유지됩니다.
+
+### 제외 범위
+
+- 실제 DB insert 구현
+- Route Handler에서 Supabase insert 호출
+- `.env` 또는 `.env.local` 생성/수정
+- SQL migration 작성
+- `/flow` UI 또는 상태관리 변경
+
 ## Phase 4.2: Supabase 저장 구현
 
 ### 목표
@@ -232,6 +257,7 @@
 - Phase 4.1에서 저장 Route Handler와 서버 검증 기준이 설계되어 있어야 합니다.
 - `docs/CONSULTATION_API_DESIGN.md`의 payload, 응답, insert 순서를 기준으로 구현합니다.
 - Phase 4.2.2-A에서 확정한 환경변수 이름, server client 위치, partial insert 실패 처리 전략을 기준으로 구현합니다.
+- Phase 4.2.2-C에서 확정한 repository 위치와 `saveConsultationRequest` 구조를 기준으로 구현합니다.
 - Phase 4는 상담 요청 저장 구현에 집중하며, 관리자 페이지와 관리자 인증은 Phase 5 범위로 유지합니다.
 
 ### 완료 기준

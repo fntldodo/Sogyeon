@@ -170,9 +170,10 @@ MVP 최소 정책은 다음과 같습니다.
 - service role key에는 절대 `NEXT_PUBLIC_` 접두사를 사용하지 않습니다.
 - 클라이언트 컴포넌트에서 service role key에 접근하지 않습니다.
 - Supabase server client 권장 위치는 `lib/supabase/server.ts`로 확정합니다.
+- `lib/supabase/server.ts`는 `server-only` 보호를 적용해 서버 전용 import를 명확히 합니다.
 - `.env.local`은 Git에 포함하지 않습니다.
-- `.env.example`은 실제 키 없이 환경변수 이름만 문서화할 수 있습니다.
-- 이번 Phase 4.2.2-A에서는 `.env` 파일을 만들지 않습니다.
+- `.env.example`은 실제 키 없이 환경변수 이름만 문서화합니다.
+- 이번 Phase 4.2.2-C에서는 `.env` 또는 `.env.local` 파일을 만들지 않습니다.
 
 ## 11. 3테이블 insert와 partial insert 처리 정책
 
@@ -200,18 +201,37 @@ MVP 1차 구현 전략은 다음과 같습니다.
 - event log 실패가 핵심 리드 저장 전체를 실패시키거나 리드 데이터를 삭제하는 기본 전략이 되지 않도록 설계합니다.
 - 관리자/운영 로그 구조가 안정화되면 실패 이벤트 기록 방식을 함께 정리합니다.
 
-## 12. Phase 4.2.2-B 또는 다음 구현 Phase TODO
+## 12. 저장 함수 구조와 Phase 4.2.3 TODO
 
-- Supabase 패키지 설치 여부 확인
-- `lib/supabase/server.ts` 생성
+실제 저장 함수 구조는 다음으로 확정합니다.
+
+| 항목 | 확정 내용 |
+| --- | --- |
+| 파일 위치 | `lib/consultation/repository.ts` |
+| 함수명 | `saveConsultationRequest` |
+| 입력 | `mapConsultationInputToStoragePayload` 결과 |
+| 역할 | Supabase 3테이블 insert와 보상 삭제 처리 |
+
+역할 분리는 다음과 같습니다.
+
+- Route Handler는 요청 파싱, 검증, mapper 호출, repository 호출, 응답 생성에 집중합니다.
+- repository는 실제 Supabase 3테이블 insert와 보상 삭제 처리에 집중합니다.
+- 이번 Phase 4.2.2-C에서는 `lib/consultation/repository.ts` 파일을 만들지 않습니다.
+
+Phase 4.2.3 TODO는 다음과 같습니다.
+
+- `lib/consultation/repository.ts` 생성
+- `saveConsultationRequest` 구현
 - 환경변수 실제 추가는 로컬 `.env.local`에서만 진행
 - Route Handler에서 `mapConsultationInputToStoragePayload` 연결
+- Route Handler에서 repository 호출
 - 3테이블 insert 구현
 - contacts insert 실패 시 requests 보상 삭제 구현
 - events insert 실패 시 rollback 금지
 - events insert 실패 시 서버 로그/운영 확인 TODO 처리
 - 저장 실패 응답 타입 보정
-- BAD_REQUEST 응답 타입 추가 검토 또는 구현
+- mock `request_id` 제거
+- 실제 `request_id` 반환
 - 실제 API POST 테스트
 - `/flow` 제출 연동 범위 분리 여부 결정
 - 중복 제출 방어 기준 결정
