@@ -63,16 +63,74 @@
 - 실시간 채팅
 - 업체 로그인
 
-## Phase 4: Supabase 연동 및 데이터 저장
+## Phase 3.9: favicon 404 제거
+
+### 목표
+
+- 브라우저 기본 요청에서 발생할 수 있는 favicon 404를 제거합니다.
+- 앱 기능 변경 없이 정적 아이콘 파일 또는 메타데이터를 정리합니다.
+
+### 완료 기준
+
+- `/favicon.ico` 요청이 404를 반환하지 않습니다.
+- 랜딩 페이지와 `/flow` 화면 동작이 유지됩니다.
+
+### 제외 범위
+
+- 브랜딩 리뉴얼
+- 앱/PWA 설정
+- 대규모 디자인 변경
+
+## Phase 4.0: Supabase 실제 연결 전 저장 정책 확정
+
+### 목표
+
+- `docs/SUPABASE_SCHEMA.md`의 3테이블 구조와 RLS 방향을 실제 구현 기준으로 확정합니다.
+- 개인정보 분리 저장, null 처리, enum 후보, 관리자/파트너 권한 범위를 구현 전 문서로 확정합니다.
+
+### 완료 기준
+
+- `consultation_requests`, `consultation_request_contacts`, `consultation_request_events` 구조가 확정됩니다.
+- 미선택 값 저장 방식이 `null` 또는 제한된 enum 값 중 하나로 정리됩니다.
+- 관리자 페이지는 Phase 5 이후 범위로 유지됩니다.
+
+### 제외 범위
+
+- Supabase 패키지 설치
+- DB 연결 코드 작성
+- 실제 SQL migration 작성
+- 관리자 페이지 구현
+
+## Phase 4.1: 상담 요청 저장 Route Handler/server validation 설계
+
+### 목표
+
+- 상담 요청 저장을 위한 Next.js 서버 측 처리 방식을 설계합니다.
+- 클라이언트 입력값을 서버에서 검증하는 기준을 정리합니다.
+
+### 완료 기준
+
+- Route Handler 또는 Server Action 중 구현 방식을 선택합니다.
+- 고객명, 연락처, 개인정보 동의 필수 검증 기준이 정리됩니다.
+- 개인정보 필드와 비개인정보 필드가 각각 어느 테이블에 저장되는지 매핑됩니다.
+
+### 제외 범위
+
+- 실제 Supabase 저장 구현
+- 관리자 페이지 구현
+- 파트너 권한 구현
+
+## Phase 4.2: Supabase 저장 구현
 
 ### 목표
 
 - 상담 요청 데이터를 Supabase에 저장합니다.
-- `DATA_FIELDS.md`의 MVP 필드를 기준으로 저장 스키마를 구성합니다.
+- `DATA_FIELDS.md`와 `SUPABASE_SCHEMA.md`의 MVP 필드를 기준으로 저장 스키마를 구성합니다.
 
 ### 전제 조건
 
-- Phase 3.8에서 `docs/SUPABASE_SCHEMA.md`의 Supabase 스키마/RLS 설계 초안이 완료되어 있어야 합니다.
+- Phase 4.0에서 `docs/SUPABASE_SCHEMA.md`의 Supabase 스키마/RLS 설계 초안이 실제 구현 기준으로 확정되어 있어야 합니다.
+- Phase 4.1에서 저장 Route Handler 또는 Server Action과 서버 검증 기준이 설계되어 있어야 합니다.
 - Phase 4는 상담 요청 저장 구현에 집중하며, 관리자 페이지와 관리자 인증은 Phase 5 범위로 유지합니다.
 
 ### 완료 기준
