@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { validateConsultationRequestPayload } from "../../../lib/consultation/validation";
 import type {
+  ConsultationApiBadRequestResponse,
   ConsultationApiSuccessResponse,
   ConsultationApiValidationErrorResponse
 } from "../../../lib/consultation/types";
@@ -13,11 +14,6 @@ type JsonParseResult =
   | {
       ok: false;
     };
-
-type ConsultationJsonParseFailureResponse = {
-  ok: false;
-  message: string;
-};
 
 async function parseJsonRequest(request: Request): Promise<JsonParseResult> {
   try {
@@ -36,9 +32,9 @@ export async function POST(request: Request) {
   const parsed = await parseJsonRequest(request);
 
   if (!parsed.ok) {
-    const response: ConsultationJsonParseFailureResponse = {
+    const response: ConsultationApiBadRequestResponse = {
       ok: false,
-      message: "요청 형식이 올바르지 않습니다."
+      code: "BAD_REQUEST"
     };
 
     return NextResponse.json(response, { status: 400 });

@@ -195,6 +195,30 @@
 - SQL migration 작성
 - `/flow` UI 또는 상태관리 변경
 
+## Phase 4.2.2-B: Supabase 저장 직전 서버 준비
+
+### 목표
+
+- 실제 DB insert 구현 전에 API 에러 응답 타입과 Supabase server client 생성 위치를 준비합니다.
+- JSON 파싱 실패 응답을 `BAD_REQUEST` 구조로 맞춥니다.
+- Supabase client 패키지와 서버 전용 client 생성 함수를 준비하되 Route Handler에 실제 저장 호출은 연결하지 않습니다.
+
+### 완료 기준
+
+- `ConsultationApiBadRequestResponse`가 API 응답 타입 유니온에 포함됩니다.
+- JSON 파싱 실패 응답이 400 상태와 `code: "BAD_REQUEST"` 구조를 반환합니다.
+- `lib/supabase/server.ts`에 `createSupabaseServiceClient`가 준비됩니다.
+- `@supabase/supabase-js` 설치 상태가 확인됩니다.
+- 3테이블 insert 구현은 다음 Phase로 유지됩니다.
+
+### 제외 범위
+
+- 실제 DB insert 구현
+- Route Handler에서 Supabase insert 호출
+- 환경변수 파일 생성 또는 수정
+- SQL migration 작성
+- `/flow` UI 또는 상태관리 변경
+
 ## Phase 4.2: Supabase 저장 구현
 
 ### 목표

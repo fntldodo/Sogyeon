@@ -83,6 +83,11 @@ export type ConsultationApiValidationErrorResponse = {
   field_errors: ConsultationFieldErrors;
 };
 
+export type ConsultationApiBadRequestResponse = {
+  ok: false;
+  code: "BAD_REQUEST";
+};
+
 export type ConsultationApiServerErrorResponse = {
   ok: false;
   code: "SERVER_ERROR";
@@ -92,4 +97,5 @@ export type ConsultationApiServerErrorResponse = {
 export type ConsultationApiResponse =
   | ConsultationApiSuccessResponse
   | ConsultationApiValidationErrorResponse
+  | ConsultationApiBadRequestResponse
   | ConsultationApiServerErrorResponse;
