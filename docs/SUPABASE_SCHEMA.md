@@ -212,12 +212,17 @@ Deny partners direct access to consultation_request_contacts by default;
 
 - Supabase 프로젝트 생성 여부 확인
 - 3테이블 구조를 그대로 적용할지, MVP 운영 비용을 고려해 일부 필드를 조정할지 확정
-- 환경변수 이름 확정
+- 환경변수 이름은 아래로 확정
   - `NEXT_PUBLIC_SUPABASE_URL`
-  - `SUPABASE_SERVICE_ROLE_KEY` 또는 서버 전용 key
+  - `SUPABASE_SERVICE_ROLE_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`는 서버 전용이며 `NEXT_PUBLIC_` 접두사를 사용하지 않음
+- Supabase server client 위치는 `lib/supabase/server.ts`로 확정
 - `.env.local`은 Git에 커밋하지 않음
 - 상담 요청 저장 Route Handler 설계
 - 서버 측 검증 함수 설계
+- 실제 저장 순서는 `consultation_requests` → `consultation_request_contacts` → `consultation_request_events`
+- MVP 1차 partial insert 처리는 contacts 실패 시 requests 보상 삭제, events 실패 시 리드 데이터 보존을 기준으로 함
+- 장기적으로는 request/contact 핵심 리드 저장의 원자성 강화를 검토하고, event log 실패가 리드 삭제로 이어지지 않게 설계
 - 저장 성공/실패 UI 설계
 - 개인정보 동의 문구 버전 관리
 - RLS 정책 적용 확인

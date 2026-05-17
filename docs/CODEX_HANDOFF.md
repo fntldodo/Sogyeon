@@ -24,7 +24,8 @@
 - Phase 2 완료: `/flow` 선택값 상태 관리와 임시 보고서 실제 선택값 반영 구현
 - Phase 2.5 완료: 모바일 우선 반응형 UI 정리, 카드형 선택 UI, 진행 단계 표시, 버튼/입력창 터치 영역 개선, 코드 구조 일부 분리
 - Phase 3 완료: 임시 보고서 이후 상담 요청서 작성 폼, 필수값 검증, 프론트 상태 기반 상담 요청서 확인/완료 화면 구현
-- Phase 4.2.1 진행 중: 상담 요청 검증 Route Handler 골격 추가, DB 저장 없이 mock 응답 단계
+- Phase 4.2.1 완료: 상담 요청 검증 Route Handler 골격 추가, DB 저장 없이 mock 응답 단계
+- Phase 4.2.2-A 진행 중: Supabase 실제 저장 구현 전 서버 저장 설계 확정
 - 아직 Supabase, DB 저장, 로그인, 관리자, 채팅, 결제, 이메일/SMS, 외부 API 기능은 없습니다.
 
 ## 현재 주요 파일
@@ -37,6 +38,13 @@
 - `app/flow/constants.ts`
 - `app/flow/types.ts`
 - `app/flow/utils.ts`
+- `app/api/consultation-requests/route.ts`
+- `lib/consultation/types.ts`
+- `lib/consultation/validation.ts`
+- `lib/consultation/mappers.ts`
+- `docs/CONSULTATION_API_DESIGN.md`
+- `docs/STORAGE_POLICY.md`
+- `docs/SUPABASE_SCHEMA.md`
 
 ## 현재 기능 요약
 

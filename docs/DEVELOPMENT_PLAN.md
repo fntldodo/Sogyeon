@@ -169,6 +169,32 @@
 - 관리자 페이지 구현
 - 파트너 권한 구현
 
+## Phase 4.2.2-A: Supabase 저장 구현 전 서버 저장 설계 확정
+
+### 목표
+
+- 실제 Supabase 저장 구현 전에 서버 저장 설계를 문서로 확정합니다.
+- 환경변수 이름, Supabase server client 위치, 3테이블 insert 순서, partial insert 실패 처리 전략을 고정합니다.
+- mock 응답 단계와 실제 저장 단계의 API 응답 구조를 구분합니다.
+
+### 완료 기준
+
+- 환경변수 이름은 `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`로 확정됩니다.
+- Supabase server client 위치는 `lib/supabase/server.ts`로 확정됩니다.
+- insert 순서는 `consultation_requests` → `consultation_request_contacts` → `consultation_request_events`로 확정됩니다.
+- MVP 1차 구현 전략은 contacts 실패 시 requests 보상 삭제, events 실패 시 리드 데이터 보존으로 정리됩니다.
+- 장기 안정화 전략은 request/contact 핵심 리드 저장의 원자성 강화와 event log 실패 분리로 정리됩니다.
+- Phase 4.2.2-B 또는 다음 구현 Phase TODO가 문서화됩니다.
+
+### 제외 범위
+
+- Supabase 패키지 설치
+- Supabase client 코드 생성
+- 실제 DB insert 구현
+- 환경변수 파일 생성 또는 수정
+- SQL migration 작성
+- `/flow` UI 또는 상태관리 변경
+
 ## Phase 4.2: Supabase 저장 구현
 
 ### 목표
@@ -181,6 +207,7 @@
 - Phase 4.0에서 `docs/SUPABASE_SCHEMA.md`의 Supabase 스키마/RLS 설계 초안이 실제 구현 기준으로 확정되어 있어야 합니다.
 - Phase 4.1에서 저장 Route Handler와 서버 검증 기준이 설계되어 있어야 합니다.
 - `docs/CONSULTATION_API_DESIGN.md`의 payload, 응답, insert 순서를 기준으로 구현합니다.
+- Phase 4.2.2-A에서 확정한 환경변수 이름, server client 위치, partial insert 실패 처리 전략을 기준으로 구현합니다.
 - Phase 4는 상담 요청 저장 구현에 집중하며, 관리자 페이지와 관리자 인증은 Phase 5 범위로 유지합니다.
 
 ### 완료 기준
