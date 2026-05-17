@@ -6,7 +6,8 @@
 
 - 현재 단계에서는 구현이 아니라 설계 문서입니다.
 - MVP에서는 고객이 `/flow`에서 입력한 창업 조건과 상담 요청서 정보를 저장하는 것을 목표로 합니다.
-- 실제 Supabase 연결, DB 생성, API Route 구현, 환경변수 추가는 Phase 4에서 별도 작업으로 진행합니다.
+- 실제 Supabase 연결, DB 생성, API Route 구현, 환경변수 추가는 Phase 4.1 이후 별도 작업으로 진행합니다.
+- 상담 요청 저장 정책은 `docs/STORAGE_POLICY.md`를 기준으로 합니다.
 
 ## 2. 기본 저장 방식
 
@@ -29,7 +30,7 @@ MVP 1차 저장 구조는 아래 3개 테이블로 시작하는 방향을 기준
 
 ## 3. 개인정보 분리 원칙
 
-- `customer_name`, `phone`, 상세 `memo`, `privacy_agreed`, `consent_version`은 `consultation_request_contacts`에 저장합니다.
+- `customer_name`, `phone_number`, 상세 `memo`, `privacy_agreed`, `forwarding_agreed`, 동의 버전 정보는 `consultation_request_contacts`에 저장합니다.
 - `consultation_requests`에는 창업 조건, 지역, 매장 상태, 키오스크/POS, 납품 방식, 쇼케이스/냉동고 상태, 대표코드 선택 여부처럼 상담 분류에 필요한 값을 저장합니다.
 - `internal_summary`는 고객명, 연락처, 상담 메모가 포함될 수 있으므로 개인정보 또는 민감 상담정보로 봅니다.
 - `internal_summary`를 저장해야 한다면 `consultation_request_contacts`에 두거나, 별도 민감 필드로 분리하고 운영자 또는 서버 전용 접근으로 제한합니다.
@@ -77,11 +78,15 @@ MVP 1차 저장 구조는 아래 3개 테이블로 시작하는 방향을 기준
 | 기본 | `created_at` | `timestamptz` | 예 | `now()` | 연락처 레코드 생성 일시 |
 | 기본 | `updated_at` | `timestamptz` | 아니오 | 없음 | 연락처 또는 동의 정보 수정 일시 |
 | 개인정보 | `customer_name` | `text` | 예 | 없음 | 신청자명 |
-| 개인정보 | `phone` | `text` | 예 | 없음 | 연락처 |
+| 개인정보 | `phone_number` | `text` | 예 | 없음 | 연락처 |
 | 민감 상담정보 | `memo` | `text` | 아니오 | 없음 | 고객 상담 메모 |
 | 민감 상담정보 | `internal_summary` | `text` | 아니오 | 없음 | 내부 전달용 상담 요청서 요약문 |
 | 동의 | `privacy_agreed` | `boolean` | 예 | `false` | 개인정보 및 상담 목적 안내 동의 여부 |
-| 동의 | `consent_version` | `text` | 아니오 | 없음 | 개인정보 동의 문구 버전 |
+| 동의 | `forwarding_agreed` | `boolean` | 예 | `false` | 상담 전달 동의 여부 |
+| 동의 | `privacy_consent_version` | `text` | 아니오 | 없음 | 개인정보 동의 문구 버전 |
+| 동의 | `forwarding_consent_version` | `text` | 아니오 | 없음 | 상담 전달 동의 문구 버전 |
+| 동의 | `consented_at` | `timestamptz` | 아니오 | 없음 | 고객이 동의하고 제출한 일시 |
+| 동의 | `consent_text_snapshot` | `text` | 아니오 | 없음 | 제출 당시 동의 문구 전문, MVP에서는 선택 사항 |
 
 ## 6. `consultation_request_events` 테이블 초안
 
@@ -135,8 +140,9 @@ MVP 1차 저장 구조는 아래 3개 테이블로 시작하는 방향을 기준
 Phase 4 저장 시 최소 필수값은 다음과 같습니다.
 
 - `consultation_request_contacts.customer_name`
-- `consultation_request_contacts.phone`
+- `consultation_request_contacts.phone_number`
 - `consultation_request_contacts.privacy_agreed = true`
+- `consultation_request_contacts.forwarding_agreed = true`
 
 상담 품질을 위해 가능하면 권장할 값은 다음과 같습니다.
 
@@ -155,7 +161,8 @@ Phase 4 저장 시 최소 필수값은 다음과 같습니다.
 ## 9. 개인정보/보안 설계
 
 - 클라이언트에 Supabase service role key를 절대 노출하지 않습니다.
-- Phase 4 구현 시 저장은 클라이언트에서 직접 Supabase에 insert하지 않고, Next.js 서버 측 Route Handler 또는 Server Action을 통해 처리하는 방향을 우선 검토합니다.
+- Phase 4 구현 시 저장은 클라이언트에서 직접 Supabase에 insert하지 않고, Next.js Route Handler를 우선 검토합니다.
+- Server Action은 후순위 후보로 남깁니다.
 - service role key를 사용할 경우 반드시 서버 환경변수에서만 사용합니다.
 - 초기 관리자 화면이 없을 때는 Supabase dashboard에서 수동 확인합니다.
 - 공개 클라이언트에서 `select`, `update`, `delete`를 허용하지 않습니다.
@@ -209,7 +216,7 @@ Deny partners direct access to consultation_request_contacts by default;
   - `NEXT_PUBLIC_SUPABASE_URL`
   - `SUPABASE_SERVICE_ROLE_KEY` 또는 서버 전용 key
 - `.env.local`은 Git에 커밋하지 않음
-- 상담 요청 저장 Route Handler 또는 Server Action 설계
+- 상담 요청 저장 Route Handler 설계
 - 서버 측 검증 함수 설계
 - 저장 성공/실패 UI 설계
 - 개인정보 동의 문구 버전 관리

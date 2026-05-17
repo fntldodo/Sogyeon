@@ -13,8 +13,9 @@ Phase 4 저장 구현에서는 `docs/SUPABASE_SCHEMA.md`의 3테이블 초안을
 | `created_at` | `consultation_requests.created_at` | 요청 생성 일시 | 아니오 | 예 | 아니오 | 아니오 | 아니오 | 아니오 | 예 | 예 |
 | `updated_at` | `consultation_requests.updated_at` | 요청 수정 또는 상태 변경 일시 | 아니오 | 아니오 | 예 | 아니오 | 아니오 | 아니오 | 예 | 아니오 |
 | `customer_name` | `consultation_request_contacts.customer_name` | 고객 이름 | 예 | 예 | 아니오 | 아니오 | 예 | 예 | 예 | 아니오 |
-| `phone` | `consultation_request_contacts.phone` | 고객 연락처 | 예 | 예 | 아니오 | 아니오 | 예 | 예 | 예 | 아니오 |
+| `phone` / `phone_number` | `consultation_request_contacts.phone_number` | 고객 연락처. 화면 입력명은 `phone`, DB 저장 후보명은 `phone_number`로 정리 | 예 | 예 | 아니오 | 아니오 | 예 | 예 | 예 | 아니오 |
 | `privacy_agreed` | `consultation_request_contacts.privacy_agreed` | 개인정보 및 상담 목적 안내 동의 여부 | 예 | 예 | 아니오 | 아니오 | 예 | 아니오 | 예 | 아니오 |
+| `forwarding_agreed` | `consultation_request_contacts.forwarding_agreed` | 상담 전달 동의 여부 | 예 | 예 | 아니오 | 아니오 | 예 | 아니오 | 예 | 아니오 |
 | `startup_type` | `consultation_requests.startup_type` | 창업 종류 | 아니오 | 아니오 | 예 | 예 | 예 | 예 | 예 | 예 |
 | `region_sido` | `consultation_requests.region_sido` | 시/도 | 아니오 | 아니오 | 예 | 예 | 예 | 예 | 예 | 예 |
 | `region_sigungu` | `consultation_requests.region_sigungu` | 시/군/구 | 아니오 | 아니오 | 예 | 예 | 예 | 예 | 예 | 예 |
@@ -37,7 +38,10 @@ Phase 4 저장 구현에서는 `docs/SUPABASE_SCHEMA.md`의 3테이블 초안을
 | `contracted_at` | `consultation_requests.contracted_at` | 계약 또는 납품 진행 확정 일시 | 아니오 | 아니오 | 예 | 아니오 | 아니오 | 아니오 | 예 | 예 |
 | `source` | `consultation_requests.source` | 유입 출처 | 아니오 | 아니오 | 예 | 아니오 | 아니오 | 아니오 | 예 | 예 |
 | `user_agent` | `consultation_requests.user_agent` | 제출 당시 브라우저 user agent | 부분 가능 | 아니오 | 예 | 아니오 | 아니오 | 아니오 | 예 | 아니오 |
-| `consent_version` | `consultation_request_contacts.consent_version` | 개인정보 동의 문구 버전 | 예 | 아니오 | 예 | 아니오 | 예 | 아니오 | 예 | 아니오 |
+| `privacy_consent_version` | `consultation_request_contacts.privacy_consent_version` | 개인정보 동의 문구 버전 | 예 | 아니오 | 예 | 아니오 | 예 | 아니오 | 예 | 아니오 |
+| `forwarding_consent_version` | `consultation_request_contacts.forwarding_consent_version` | 상담 전달 동의 문구 버전 | 예 | 아니오 | 예 | 아니오 | 예 | 아니오 | 예 | 아니오 |
+| `consented_at` | `consultation_request_contacts.consented_at` | 고객 동의 및 제출 일시 | 예 | 아니오 | 예 | 아니오 | 예 | 아니오 | 예 | 아니오 |
+| `consent_text_snapshot` | `consultation_request_contacts.consent_text_snapshot` | 제출 당시 동의 문구 전문, MVP에서는 선택 사항 | 예 | 아니오 | 예 | 아니오 | 아니오 | 아니오 | 예 | 아니오 |
 | `event_type` | `consultation_request_events.event_type` | 상태 변경 또는 운영 이벤트 종류 | 아니오 | 예 | 아니오 | 아니오 | 아니오 | 아니오 | 예 | 예 |
 | `actor_type` | `consultation_request_events.actor_type` | 이벤트 생성 주체 | 아니오 | 예 | 아니오 | 아니오 | 아니오 | 아니오 | 예 | 예 |
 | `event_note` | `consultation_request_events.note` | 운영 이벤트 메모 | 부분 가능 | 아니오 | 예 | 아니오 | 아니오 | 아니오 | 예 | 아니오 |
@@ -62,4 +66,5 @@ Phase 4 저장 구현에서는 `docs/SUPABASE_SCHEMA.md`의 3테이블 초안을
 - 상담 분류와 KPI에 필요한 비개인정보 필드는 `consultation_requests`에 저장합니다.
 - 상태 변경, 담당자 전달, 운영 메모는 `consultation_request_events`에 이벤트로 남기는 방향을 우선합니다.
 - 미선택 항목은 표시용 문구 대신 `null` 또는 제한된 enum 값으로 저장합니다.
+- 저장 정책과 서버 검증 기준은 `docs/STORAGE_POLICY.md`를 우선 확인합니다.
 - Phase 4 저장 구현 전에는 `docs/SUPABASE_SCHEMA.md`의 스키마/RLS 설계를 기준으로 서버 측 검증과 저장 방식을 확정합니다.

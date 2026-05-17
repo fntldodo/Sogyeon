@@ -87,11 +87,14 @@
 
 - `docs/SUPABASE_SCHEMA.md`의 3테이블 구조와 RLS 방향을 실제 구현 기준으로 확정합니다.
 - 개인정보 분리 저장, null 처리, enum 후보, 관리자/파트너 권한 범위를 구현 전 문서로 확정합니다.
+- `docs/STORAGE_POLICY.md`에 Route Handler 우선 저장 방식, 서버 검증, 동의 버전, 에러 응답, 스팸 방어 정책을 정리합니다.
 
 ### 완료 기준
 
 - `consultation_requests`, `consultation_request_contacts`, `consultation_request_events` 구조가 확정됩니다.
 - 미선택 값 저장 방식이 `null` 또는 제한된 enum 값 중 하나로 정리됩니다.
+- 상담 요청 저장은 Route Handler 방식을 우선 권장하는 것으로 정리됩니다.
+- 필수값, 동의값, 에러 응답, 키 보안 원칙이 문서화됩니다.
 - 관리자 페이지는 Phase 5 이후 범위로 유지됩니다.
 
 ### 제외 범위
@@ -110,8 +113,8 @@
 
 ### 완료 기준
 
-- Route Handler 또는 Server Action 중 구현 방식을 선택합니다.
-- 고객명, 연락처, 개인정보 동의 필수 검증 기준이 정리됩니다.
+- Route Handler 파일 위치와 서버 검증 함수 위치가 정리됩니다.
+- 고객명, 연락처, 개인정보 동의, 상담 전달 동의 필수 검증 기준이 정리됩니다.
 - 개인정보 필드와 비개인정보 필드가 각각 어느 테이블에 저장되는지 매핑됩니다.
 
 ### 제외 범위
