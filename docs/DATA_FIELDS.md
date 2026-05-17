@@ -67,4 +67,5 @@ Phase 4 저장 구현에서는 `docs/SUPABASE_SCHEMA.md`의 3테이블 초안을
 - 상태 변경, 담당자 전달, 운영 메모는 `consultation_request_events`에 이벤트로 남기는 방향을 우선합니다.
 - 미선택 항목은 표시용 문구 대신 `null` 또는 제한된 enum 값으로 저장합니다.
 - 저장 정책과 서버 검증 기준은 `docs/STORAGE_POLICY.md`를 우선 확인합니다.
+- Route Handler payload와 응답 설계는 `docs/CONSULTATION_API_DESIGN.md`를 우선 확인합니다.
 - Phase 4 저장 구현 전에는 `docs/SUPABASE_SCHEMA.md`의 스키마/RLS 설계를 기준으로 서버 측 검증과 저장 방식을 확정합니다.

@@ -7,6 +7,7 @@
 - 이번 Phase 4.0에서는 구현하지 않습니다.
 - Supabase 연결, DB 저장, 환경변수 추가, 패키지 설치, API Route 작성은 하지 않습니다.
 - Phase 4.1과 Phase 4.2에서 구현할 때 이 문서를 기준으로 저장 흐름과 서버 검증을 설계합니다.
+- Route Handler와 서버 검증의 상세 설계는 `docs/CONSULTATION_API_DESIGN.md`를 기준으로 합니다.
 
 ## 2. 저장 방식 결정
 
@@ -155,8 +156,9 @@ MVP 최소 정책은 다음과 같습니다.
 
 ## 11. Phase 4.1/4.2로 넘길 TODO
 
-- Route Handler 파일 위치 결정
-- 서버 검증 함수 위치 결정
+- Route Handler 파일 위치 결정: `app/api/consultation-requests/route.ts`
+- 서버 검증 함수 위치 결정: `lib/consultation/validation.ts`
+- 서버 타입/매핑 후보 위치 결정: `lib/consultation/types.ts`, `lib/consultation/mappers.ts`
 - Supabase client 서버 전용 생성 방식 결정
 - 실제 insert 순서 결정
 - 실패 시 UI 처리 방식 결정

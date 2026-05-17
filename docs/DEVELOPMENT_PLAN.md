@@ -110,12 +110,15 @@
 
 - 상담 요청 저장을 위한 Next.js 서버 측 처리 방식을 설계합니다.
 - 클라이언트 입력값을 서버에서 검증하는 기준을 정리합니다.
+- `docs/CONSULTATION_API_DESIGN.md`에 Route Handler 위치, 서버 검증 함수 위치, payload 타입, 응답 구조, insert 순서를 문서화합니다.
 
 ### 완료 기준
 
 - Route Handler 파일 위치와 서버 검증 함수 위치가 정리됩니다.
 - 고객명, 연락처, 개인정보 동의, 상담 전달 동의 필수 검증 기준이 정리됩니다.
 - 개인정보 필드와 비개인정보 필드가 각각 어느 테이블에 저장되는지 매핑됩니다.
+- 성공/검증 실패/서버 오류 응답 구조가 정리됩니다.
+- Supabase 3테이블 insert 순서와 partial insert 위험이 문서화됩니다.
 
 ### 제외 범위
 
@@ -133,7 +136,8 @@
 ### 전제 조건
 
 - Phase 4.0에서 `docs/SUPABASE_SCHEMA.md`의 Supabase 스키마/RLS 설계 초안이 실제 구현 기준으로 확정되어 있어야 합니다.
-- Phase 4.1에서 저장 Route Handler 또는 Server Action과 서버 검증 기준이 설계되어 있어야 합니다.
+- Phase 4.1에서 저장 Route Handler와 서버 검증 기준이 설계되어 있어야 합니다.
+- `docs/CONSULTATION_API_DESIGN.md`의 payload, 응답, insert 순서를 기준으로 구현합니다.
 - Phase 4는 상담 요청 저장 구현에 집중하며, 관리자 페이지와 관리자 인증은 Phase 5 범위로 유지합니다.
 
 ### 완료 기준
