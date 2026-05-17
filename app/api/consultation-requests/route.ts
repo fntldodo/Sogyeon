@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
+import { mapConsultationInputToStoragePayload } from "../../../lib/consultation/mappers";
+import { saveConsultationRequest } from "../../../lib/consultation/repository";
 import { validateConsultationRequestPayload } from "../../../lib/consultation/validation";
 import type {
   ConsultationApiBadRequestResponse,
+  ConsultationApiServerErrorResponse,
   ConsultationApiSuccessResponse,
   ConsultationApiValidationErrorResponse
 } from "../../../lib/consultation/types";
@@ -52,11 +55,22 @@ export async function POST(request: Request) {
     return NextResponse.json(response, { status: 400 });
   }
 
-  // Temporary mock id for Phase 4.2.1. No database write is performed in this phase.
+  const payload = mapConsultationInputToStoragePayload(parsed.body);
+  const saveResult = await saveConsultationRequest(payload);
+
+  if (!saveResult.ok) {
+    const response: ConsultationApiServerErrorResponse = {
+      ok: false,
+      code: "SERVER_ERROR"
+    };
+
+    return NextResponse.json(response, { status: 500 });
+  }
+
   const response: ConsultationApiSuccessResponse = {
     ok: true,
-    request_id: `mock_${crypto.randomUUID()}`,
-    message: "상담 요청 검증이 완료되었습니다. 저장 기능은 아직 연결되지 않았습니다."
+    request_id: saveResult.request_id,
+    message: "상담 요청이 접수되었습니다."
   };
 
   return NextResponse.json(response, { status: 201 });

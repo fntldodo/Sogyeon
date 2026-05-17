@@ -27,8 +27,9 @@
 - Phase 4.2.1 완료: 상담 요청 검증 Route Handler 골격 추가, DB 저장 없이 mock 응답 단계
 - Phase 4.2.2-A 완료: Supabase 실제 저장 구현 전 서버 저장 설계 확정
 - Phase 4.2.2-B 완료: API 에러 응답 타입과 Supabase server client 준비, DB insert 미구현
-- Phase 4.2.2-C 진행 중: Supabase server client server-only 보호와 `.env.example` 준비, repository 구조 문서 확정
-- 아직 Supabase, DB 저장, 로그인, 관리자, 채팅, 결제, 이메일/SMS, 외부 API 기능은 없습니다.
+- Phase 4.2.2-C 완료: Supabase server client server-only 보호와 `.env.example` 준비, repository 구조 문서 확정
+- Phase 4.2.3 진행 중: Route Handler Supabase 3테이블 저장 연결, `/flow` 제출 연동은 미구현
+- 아직 로그인, 관리자, 채팅, 결제, 이메일/SMS, 외부 API 기능은 없습니다.
 
 ## 현재 주요 파일
 
@@ -44,6 +45,7 @@
 - `lib/consultation/types.ts`
 - `lib/consultation/validation.ts`
 - `lib/consultation/mappers.ts`
+- `lib/consultation/repository.ts`
 - `lib/supabase/server.ts`
 - `docs/CONSULTATION_API_DESIGN.md`
 - `docs/STORAGE_POLICY.md`

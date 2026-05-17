@@ -91,7 +91,6 @@ export type ConsultationApiBadRequestResponse = {
 export type ConsultationApiServerErrorResponse = {
   ok: false;
   code: "SERVER_ERROR";
-  message: string;
 };
 
 export type ConsultationApiResponse =

@@ -244,6 +244,30 @@
 - SQL migration 작성
 - `/flow` UI 또는 상태관리 변경
 
+## Phase 4.2.3: Route Handler Supabase 저장 연결
+
+### 목표
+
+- `POST /api/consultation-requests` Route Handler에 실제 Supabase 저장을 연결합니다.
+- 저장 로직을 `lib/consultation/repository.ts`의 `saveConsultationRequest`로 분리합니다.
+- 3테이블 insert 순서와 partial insert 실패 처리 정책을 구현합니다.
+
+### 완료 기준
+
+- `lib/consultation/repository.ts`가 생성됩니다.
+- `saveConsultationRequest`가 `consultation_requests`, `consultation_request_contacts`, `consultation_request_events` 순서로 insert합니다.
+- contacts insert 실패 시 requests 보상 삭제를 시도합니다.
+- events insert 실패 시 request/contact rollback을 하지 않습니다.
+- Route Handler는 mock `request_id` 대신 실제 `request_id`를 반환합니다.
+- 저장 실패 시 500 응답과 `code: "SERVER_ERROR"`를 반환합니다.
+
+### 제외 범위
+
+- `.env` 또는 `.env.local` 생성/수정
+- SQL migration 작성
+- `/flow` 제출 연동
+- `/flow` UI 또는 상태관리 변경
+
 ## Phase 4.2: Supabase 저장 구현
 
 ### 목표
