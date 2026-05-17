@@ -11,6 +11,7 @@
 - [데이터 필드 정의](docs/DATA_FIELDS.md)
 - [개발 계획](docs/DEVELOPMENT_PLAN.md)
 - [Codex 이어받기 문서](docs/CODEX_HANDOFF.md)
+- [보안 점검 TODO](docs/SECURITY_TODO.md)
 
 ## 실행 방법
 
