@@ -13,6 +13,7 @@ import {
 } from "./components";
 import {
   cashPaymentOptions,
+  consultationSubmitErrorMessage,
   emptyConsultationFormValues,
   emptyValues,
   freezerSupportOptions,
@@ -29,7 +30,20 @@ import {
 } from "./constants";
 import { ConsultationCompletePanel, ConsultationFormPanel } from "./form-components";
 import type { ConsultationFormErrors, ConsultationFormValues, FlowValues, StartupType, StepId } from "./types";
-import { createInternalConsultationSummary, createReportSections } from "./utils";
+import { createConsultationRequestPayload, createInternalConsultationSummary, createReportSections } from "./utils";
+import type { ConsultationApiSuccessResponse } from "../../lib/consultation/types";
+
+function isConsultationApiSuccessResponse(value: unknown): value is ConsultationApiSuccessResponse {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "ok" in value &&
+    value.ok === true &&
+    "request_id" in value &&
+    typeof value.request_id === "string" &&
+    value.request_id.length > 0
+  );
+}
 
 export default function FlowPage() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -37,6 +51,9 @@ export default function FlowPage() {
   const [consultationValues, setConsultationValues] =
     useState<ConsultationFormValues>(emptyConsultationFormValues);
   const [consultationErrors, setConsultationErrors] = useState<ConsultationFormErrors>({});
+  const [consultationSubmitError, setConsultationSubmitError] = useState<string | null>(null);
+  const [isSubmittingConsultation, setIsSubmittingConsultation] = useState(false);
+  const [savedRequestId, setSavedRequestId] = useState<string | null>(null);
   const step = steps[activeIndex];
   const progress = Math.round(((activeIndex + 1) / steps.length) * 100);
 
@@ -78,6 +95,7 @@ export default function FlowPage() {
       ...current,
       [key]: undefined
     }));
+    setConsultationSubmitError(null);
   };
 
   const goToStep = (stepId: StepId) => {
@@ -111,18 +129,52 @@ export default function FlowPage() {
     return Object.keys(nextErrors).length === 0;
   };
 
-  const submitConsultationForm = () => {
+  const submitConsultationForm = async () => {
+    if (isSubmittingConsultation) {
+      return;
+    }
+
+    setConsultationSubmitError(null);
+
     if (!validateConsultationForm()) {
       return;
     }
 
-    setConsultationValues((current) => ({
-      ...current,
-      customer_name: current.customer_name.trim(),
-      phone: current.phone.trim(),
-      memo: current.memo.trim()
-    }));
-    goToStep("consultation-complete");
+    const nextConsultationValues = {
+      ...consultationValues,
+      customer_name: consultationValues.customer_name.trim(),
+      phone: consultationValues.phone.trim(),
+      memo: consultationValues.memo.trim()
+    };
+    const nextInternalSummaryText = createInternalConsultationSummary(values, nextConsultationValues);
+    const payload = createConsultationRequestPayload(values, nextConsultationValues, nextInternalSummaryText);
+
+    setIsSubmittingConsultation(true);
+    setSavedRequestId(null);
+
+    try {
+      const response = await fetch("/api/consultation-requests", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+      const responseBody: unknown = await response.json().catch(() => null);
+
+      if (!response.ok || !isConsultationApiSuccessResponse(responseBody)) {
+        setConsultationSubmitError(consultationSubmitErrorMessage);
+        return;
+      }
+
+      setConsultationValues(nextConsultationValues);
+      setSavedRequestId(responseBody.request_id);
+      goToStep("consultation-complete");
+    } catch {
+      setConsultationSubmitError(consultationSubmitErrorMessage);
+    } finally {
+      setIsSubmittingConsultation(false);
+    }
   };
 
   const selectStartupType = (startupType: StartupType) => {
@@ -155,7 +207,7 @@ export default function FlowPage() {
 
   const goNext = () => {
     if (step.id === "consultation-form") {
-      submitConsultationForm();
+      void submitConsultationForm();
       return;
     }
 
@@ -170,12 +222,15 @@ export default function FlowPage() {
     setValues(emptyValues);
     setConsultationValues(emptyConsultationFormValues);
     setConsultationErrors({});
+    setConsultationSubmitError(null);
+    setIsSubmittingConsultation(false);
+    setSavedRequestId(null);
     setActiveIndex(0);
   };
 
   const getNextLabel = () => {
     if (step.id === "consultation-form") {
-      return "상담 요청서 확인하기";
+      return isSubmittingConsultation ? "저장 중..." : "상담 요청서 제출하기";
     }
 
     return "다음 단계";
@@ -349,6 +404,8 @@ export default function FlowPage() {
               <ConsultationFormPanel
                 values={consultationValues}
                 errors={consultationErrors}
+                isSubmitting={isSubmittingConsultation}
+                submitError={consultationSubmitError}
                 onChange={updateConsultationValue}
               />
             ) : null}
@@ -358,6 +415,7 @@ export default function FlowPage() {
                 formValues={consultationValues}
                 internalSummaryText={internalSummaryText}
                 reportSections={reportSections}
+                requestId={savedRequestId}
               />
             ) : null}
 
@@ -366,6 +424,7 @@ export default function FlowPage() {
               totalSteps={steps.length}
               nextLabel={getNextLabel()}
               showNext={step.id !== "report" && step.id !== "consultation-complete"}
+              nextDisabled={isSubmittingConsultation}
               onPrevious={goPrevious}
               onNext={goNext}
               onReset={resetFlow}

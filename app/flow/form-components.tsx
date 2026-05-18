@@ -5,6 +5,8 @@ import type { ConsultationFormErrors, ConsultationFormValues, ReportSection } fr
 type ConsultationFormPanelProps = {
   values: ConsultationFormValues;
   errors: ConsultationFormErrors;
+  isSubmitting: boolean;
+  submitError: string | null;
   onChange: <Key extends keyof ConsultationFormValues>(
     key: Key,
     value: ConsultationFormValues[Key]
@@ -15,18 +17,35 @@ type ConsultationCompletePanelProps = {
   formValues: ConsultationFormValues;
   internalSummaryText: string;
   reportSections: ReportSection[];
+  requestId: string | null;
 };
 
 type CopyStatus = "idle" | "success" | "error";
 
-export function ConsultationFormPanel({ values, errors, onChange }: ConsultationFormPanelProps) {
+export function ConsultationFormPanel({
+  values,
+  errors,
+  isSubmitting,
+  submitError,
+  onChange
+}: ConsultationFormPanelProps) {
   return (
     <div className="grid gap-4">
       <div className="rounded-lg border border-line bg-paper p-4 sm:p-5">
         <h2 className="text-lg font-extrabold text-ink">고객 기본 정보</h2>
         <p className="mt-2 text-sm leading-6 text-muted">
-          실제 접수 저장은 아직 연결하지 않고, 입력값 확인 화면까지만 제공합니다.
+          입력값을 확인한 뒤 상담 요청 정보를 안전하게 저장합니다.
         </p>
+        {isSubmitting ? (
+          <p className="mt-3 break-words text-sm font-bold leading-6 text-brand" role="status">
+            상담 요청을 저장하는 중입니다.
+          </p>
+        ) : null}
+        {submitError ? (
+          <p className="mt-3 break-words text-sm font-bold leading-6 text-red-600" role="alert">
+            {submitError}
+          </p>
+        ) : null}
       </div>
 
       <div className="grid gap-4">
@@ -89,7 +108,8 @@ export function ConsultationFormPanel({ values, errors, onChange }: Consultation
 export function ConsultationCompletePanel({
   formValues,
   internalSummaryText,
-  reportSections
+  reportSections,
+  requestId
 }: ConsultationCompletePanelProps) {
   const [copyStatus, setCopyStatus] = useState<CopyStatus>("idle");
 
@@ -118,6 +138,7 @@ export function ConsultationCompletePanel({
       </div>
 
       <div className="grid gap-3 lg:grid-cols-2">
+        {requestId ? <SummaryRow label="접수번호" value={requestId} wide /> : null}
         <SummaryRow label="이름 또는 신청자명" value={formValues.customer_name} />
         <SummaryRow label="연락처" value={formValues.phone} />
         <SummaryRow label="상담 요청 메모" value={formValues.memo || "작성한 메모 없음"} wide />

@@ -181,7 +181,14 @@ export const reportSectionLabels = {
 };
 
 export const consultationCompletionNotice =
-  "아직 실제 접수 저장 기능은 연결되지 않았습니다. 다음 단계에서 Supabase 저장 기능을 연결할 예정입니다.";
+  "상담 요청이 저장되었습니다. 담당자가 정리된 조건을 확인한 뒤 상담 준비에 활용합니다.";
+
+export const consultationSubmitErrorMessage =
+  "상담 요청 저장 중 문제가 발생했어요. 잠시 후 다시 시도해 주세요.";
+
+export const privacyConsentVersion = "privacy-v2026-05-17";
+
+export const forwardingConsentVersion = "forwarding-v2026-05-17";
 
 export const privacyAgreementText =
   "개인정보와 상담 요청 내용을 납품 상담 준비 목적으로 확인하는 데 동의합니다.";

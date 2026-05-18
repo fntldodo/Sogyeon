@@ -1,5 +1,11 @@
-import { partnerCheckRequestItems, reportSectionLabels } from "./constants";
+import {
+  forwardingConsentVersion,
+  partnerCheckRequestItems,
+  privacyConsentVersion,
+  reportSectionLabels
+} from "./constants";
 import type { ConsultationFormValues, FlowValues, ReportSection } from "./types";
+import type { ConsultationRequestInput } from "../../lib/consultation/types";
 
 export function displayValue(value: string) {
   return value.trim() || "아직 선택하지 않음";
@@ -80,4 +86,34 @@ export function createInternalConsultationSummary(
     "업체에 확인 요청할 항목:",
     checkItems
   ].join("\n");
+}
+
+export function createConsultationRequestPayload(
+  values: FlowValues,
+  consultationValues: ConsultationFormValues,
+  internalSummaryText: string
+): ConsultationRequestInput {
+  return {
+    customer_name: consultationValues.customer_name,
+    phone_number: consultationValues.phone,
+    contact_memo: consultationValues.memo,
+    privacy_agreed: consultationValues.privacy_agreed,
+    forwarding_agreed: consultationValues.privacy_agreed,
+    privacy_consent_version: privacyConsentVersion,
+    forwarding_consent_version: forwardingConsentVersion,
+    consented_at: new Date().toISOString(),
+    startup_type: values.startup_type,
+    region_sido: values.region_sido,
+    region_sigungu: values.region_sigungu,
+    region_detail: values.region_area_text,
+    store_status: values.store_status,
+    store_type: values.store_format,
+    kiosk_pos_needs: [values.pos_kiosk_type, ...values.pos_kiosk_options],
+    cash_payment_type: values.cash_payment_type,
+    supply_preference: values.supply_type,
+    freezer_showcase_status: values.freezer_support_status,
+    sogyeon_code_requested: values.sogyeon_code_choice,
+    internal_summary: internalSummaryText,
+    source_channel: "web_flow"
+  };
 }
